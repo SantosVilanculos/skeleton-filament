@@ -3,7 +3,10 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "keywords": [
+        "laravel",
+        "framework"
+    ],
     "license": "MIT",
     "require": {
         "php": "^8.2",
@@ -12,14 +15,20 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.15",
+        "barryvdh/laravel-ide-helper": "^3.5",
         "fakerphp/faker": "^1.23",
+        "laradumps/laradumps": "^4.3",
+        "larastan/larastan": "^3.5",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
-        "pestphp/pest-plugin-laravel": "^3.2"
+        "pestphp/pest-plugin-laravel": "^3.2",
+        "pestphp/pest-plugin-type-coverage": "^3.6",
+        "rector/rector": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -54,9 +63,21 @@
             "Composer\\Config::disableProcessTimeout",
             "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
         ],
+        "lint": [
+            "npx prettier --check \"./resources/**/*.{blade.php,css,js}\"",
+            "vendor/bin/phpstan analyse",
+            "vendor/bin/rector --dry-run",
+            "vendor/bin/pint --test"
+        ],
+        "format": [
+            "npx prettier --write \"./resources/**/*.{blade.php,css,js}\"",
+            "vendor/bin/rector",
+            "vendor/bin/pint"
+        ],
         "test": [
             "@php artisan config:clear --ansi",
-            "@php artisan test"
+            "vendor/bin/pest --bail",
+            "vendor/bin/pest --type-coverage --min=100"
         ]
     },
     "extra": {
