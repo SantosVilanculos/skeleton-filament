@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -42,9 +44,19 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'remember_token',
     ];
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->image_path ? Storage::url($this->image_path) : null;
+    }
+
     protected static function booted(): void
     {
-        static::updated(function (User $user) {
+        static::updated(function (User $user): void {
             if ($user->isDirty('image_path')) {
                 $imagePath = $user->getOriginal('image_path');
                 if (filled($imagePath) && Storage::fileExists($imagePath)) {
@@ -63,15 +75,5 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return true;
-    }
-
-    public function getFilamentAvatarUrl(): ?string
-    {
-        return $this->image_path ? Storage::url($this->image_path) : null;
     }
 }
