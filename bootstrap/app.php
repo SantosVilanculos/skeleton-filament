@@ -11,7 +11,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->redirectGuestsTo(fn () => route(name: 'filament.admin.auth.login', absolute: false));
+        $middleware->redirectUsersTo(fn () => route(name: 'filament.admin.pages.dashboard', absolute: false));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
