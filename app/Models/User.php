@@ -9,6 +9,7 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property-read int $id
@@ -19,6 +20,7 @@ use Illuminate\Notifications\Notifiable;
  * @property-read string|null $remember_token
  * @property-read \Carbon\CarbonImmutable|null $created_at
  * @property-read \Carbon\CarbonImmutable|null $updated_at
+ * @property-read string|null $image_path
  */
 class User extends Authenticatable implements FilamentUser, HasAvatar
 {
@@ -40,6 +42,18 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         'remember_token',
     ];
 
+    protected static function booted(): void
+    {
+        static::updated(function (User $user) {
+            if ($user->isDirty('image_path')) {
+                $imagePath = $user->getOriginal('image_path');
+                if (filled($imagePath) && Storage::fileExists($imagePath)) {
+                    Storage::delete($imagePath);
+                }
+            }
+        });
+    }
+
     /**
      * @return array<string, string>
      */
@@ -58,6 +72,6 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return null;
+        return $this->image_path ? Storage::url($this->image_path) : null;
     }
 }

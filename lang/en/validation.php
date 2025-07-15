@@ -195,6 +195,7 @@ return [
 
     'attributes' => [
         'email' => 'email address',
+        'image_path' => 'image',
         'name' => 'name',
         'password' => 'password',
         'user_id' => 'user',

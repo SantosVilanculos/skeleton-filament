@@ -194,6 +194,7 @@ return [
 
     'attributes' => [
         'email' => 'endereço de e-mail',
+        'image_path' => 'imagem',
         'name' => 'nome',
         'password' => 'palavra-passe',
         'user_id' => 'utilizador',
